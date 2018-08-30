@@ -5,7 +5,8 @@ const Alexa = require('ask-sdk');
 var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 var alexaCookbook = require('./alexa-cookbook.js');
-var alexaGaming = require('./alexa-gaming-cookbook.js');
+// Step 1: Require the alexa-gaming-cookbook.js and set it to alexaGaming
+
 alexaGaming.setAWS(AWS);
 alexaGaming.setDebug(true);
 
@@ -51,16 +52,13 @@ const LaunchRequestHandler = {
     
     var response = null;
 
-    if(attributes.SETUP_STATE == "STARTED") {
-      var launchSetUpResult = await launchSetUp(speechText, reprompt, handlerInput, attributes);
-      attributes = launchSetUpResult.attributes;
-      response = launchSetUpResult.response;
-    } else {
-      response = responseBuilder
+    response = responseBuilder
         .speak(speechText + reprompt)
         .reprompt(reprompt)
         .getResponse();
-    }
+
+    // Step 2: Add SETUP_STATE check
+
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
     return response;
@@ -95,19 +93,11 @@ const CompletetedFlipSwitchIntentHandler = {
 
     var attributes = await handlerInput.attributesManager.getPersistentAttributes()
 
-    var payloadObj = { 
-      type: "State",
-      message: state
-    };
+    // Step 3: Create the payload for turning on/off the light
+    
 
-    var response = await alexaGaming.publishEventSimple(JSON.stringify(payloadObj), attributes.SQS_QUEUE_URL).then((data) => {
-      return handlerInput.responseBuilder
-        .speak(speechText + reprompt)
-        .reprompt(reprompt)
-        .getResponse();
-    }).catch((err) => {
-      return ErrorHandler.handle(handlerInput, err);
-    });
+    // Step 4: Add alexaGaming.publishEventSimple and send our payload
+    
     return response;
   }
 };
@@ -140,19 +130,11 @@ const CompletedChangeColorIntentHandler = {
 
     var attributes = await handlerInput.attributesManager.getPersistentAttributes();
 
-    var payloadObj = { 
-      type: "Color",
-      message: color
-    };
+    // Step 5: Create the payload for changing the light color
+    
 
-    var response = await alexaGaming.publishEventSimple(JSON.stringify(payloadObj), attributes.SQS_QUEUE_URL).then((data) => {
-      return handlerInput.responseBuilder
-        .speak(speechText + reprompt)
-        .reprompt(reprompt)
-        .getResponse();
-    }).catch((err) => {
-      return ErrorHandler.handle(handlerInput, err);
-    });
+    // Step 6: Add alexaGaming.publishEventSimple and send our payload
+    
     return response;
   },
 };
@@ -181,12 +163,12 @@ const HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speechText = 'You can say turn on to turn on the pump!';
+    const speechText = 'You can say turn on to turn on the light!';
 
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .withSimpleCard('Alexa Plus Unity Test', speechText)
       .getResponse();
   },
 };
@@ -202,7 +184,7 @@ const CancelAndStopIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .withSimpleCard('Alexa Plus Unity Test', speechText)
       .getResponse();
   },
 };
@@ -257,20 +239,10 @@ async function launchSetUp(speechText, reprompt, handlerInput, attributes) {
   const responseBuilder = handlerInput.responseBuilder;
 
   speechText += alexaCookbook.getRandomItem(speechOutputs.launch.speak.setup) + reprompt;
-  var response = await alexaGaming.createQueue(attributes.SQS_QUEUE).then(async (data) => {
-    attributes.SQS_QUEUE_URL = data.QueueUrl.toString();
 
-    var responseToReturn = responseBuilder
-      .speak(speechText)
-      .reprompt(reprompt)
-      .withSimpleCard('Alexa Plus Unity', "Here is your Player ID: " + attributes.SQS_QUEUE)
-      .getResponse();
+  // Step 7: Create a sqs queue and send it to user for them to input in the game
+  
 
-    var userId = handlerInput.requestEnvelope.session.user.userId;
-    return await sendUserId(userId, attributes, handlerInput, responseToReturn);
-  }).catch((err) => {
-    return ErrorHandler.handle(handlerInput, err);
-  });
   var result = {
     response: response,
     attributes: attributes
@@ -279,22 +251,18 @@ async function launchSetUp(speechText, reprompt, handlerInput, attributes) {
 }
 
 async function sendUserId(userId, attributes, handlerInput, response) {
-  var payloadObj = { 
-    type: "AlexaUserId",
-    message: userId
-  };
-  return await alexaGaming.publishEventSimple(JSON.stringify(payloadObj), attributes.SQS_QUEUE_URL).then((data) => {
-    return response;
-  }).catch((err) => {
-    return ErrorHandler.handle(handlerInput, err);
-  });
+
+  // Step 8: Create a payload that has the alexa user id
+  
+
+  // Step 9: Add alexaGaming.publishEventSimple and send our payload
+  
 }
 
 async function setAttributes(attributes) {
   if (Object.keys(attributes).length === 0) {
-    attributes.SETUP_STATE = "STARTED";
-    attributes.SQS_QUEUE = await alexaGaming.uniqueQueueGenerator();
-    attributes.SQS_QUEUE_URL = null;
+    // Step 10: Initialize the attributes
+    
     //Add more attributes here that need to be initalized at skill start
   }
   return attributes;
