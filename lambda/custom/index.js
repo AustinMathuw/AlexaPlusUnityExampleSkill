@@ -98,7 +98,7 @@ const CompletetedFlipSwitchIntentHandler = {
     // Step 3: Create the payload for turning on/off the light
     
 
-    // Step 4: Add alexaPlusUnity.publishEventSimple and send our payload
+    // Step 4: Add alexaPlusUnity.publishEvent and send our payload
     
     return response;
   }
@@ -135,7 +135,7 @@ const CompletedChangeColorIntentHandler = {
     // Step 5: Create the payload for changing the light color
     
 
-    // Step 6: Add alexaPlusUnity.publishEventSimple and send our payload
+    // Step 6: Add alexaPlusUnity.publishEvent and send our payload
     
     return response;
   },
@@ -187,8 +187,6 @@ const CompletedGetObjectInDirectionIntentHandler = {
 
 
     // Step 8: Add alexaPlusUnity.publishMessageAndListenToResponse and send our payload
-
-    console.log(response);
     
     return response;
   }
@@ -291,10 +289,10 @@ exports.handler = skillBuilder
   
   async function sendUserId(userId, attributes, handlerInput, response) {
   
-    // Step 10: Create a payload that has the alexa user id
+    // Step 10: Create a payload that has the user's alexa id
     
   
-    // Step 11: Add alexaPlusUnity.publishEventSimple and send our payload
+    // Step 11: Add alexaPlusUnity.publishEvent and send our payload
     
   }
   
