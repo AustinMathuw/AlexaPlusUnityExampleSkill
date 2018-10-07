@@ -5,10 +5,10 @@ const Alexa = require('ask-sdk');
 var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 var alexaCookbook = require('./alexa-cookbook.js');
-// Step 1: Require the alexa-gaming-cookbook.js and set it to alexaGaming
+// Step 1: Require the alexaplusunity module and set it to alexaPlusUnityClass
 
-alexaGaming.setAWS(AWS);
-alexaGaming.setDebug(true);
+// Next, create a new instance of alexaPlusUnityClass and set it to alexaPlusUnity
+
 
 const speechOutputs = {
   launch: {
@@ -46,13 +46,15 @@ const LaunchRequestHandler = {
 
     var attributes = await attributesManager.getPersistentAttributes() || {};
     attributes = await setAttributes(attributes);
+    
+    if(attributes == null) {
+      return ErrorHandler.handle(handlerInput, "Error setting attributes... Check logs");
+    }
 
     var reprompt = alexaCookbook.getRandomItem(speechOutputs.launch.reprompt);
     var speechText = alexaCookbook.getRandomItem(speechOutputs.launch.speak.normal);
     
-    var response = null;
-
-    response = responseBuilder
+    var response = responseBuilder
         .speak(speechText + reprompt)
         .reprompt(reprompt)
         .getResponse();
@@ -96,7 +98,7 @@ const CompletetedFlipSwitchIntentHandler = {
     // Step 3: Create the payload for turning on/off the light
     
 
-    // Step 4: Add alexaGaming.publishEventSimple and send our payload
+    // Step 4: Add alexaPlusUnity.publishEventSimple and send our payload
     
     return response;
   }
@@ -133,7 +135,7 @@ const CompletedChangeColorIntentHandler = {
     // Step 5: Create the payload for changing the light color
     
 
-    // Step 6: Add alexaGaming.publishEventSimple and send our payload
+    // Step 6: Add alexaPlusUnity.publishEventSimple and send our payload
     
     return response;
   },
@@ -157,13 +159,48 @@ const GetColorIntentHandler = {
   }
 }
 
+const InProgressGetObjectInDirectionIntentHandler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' &&
+      request.intent.name === 'GetObjectInDirectionIntent' &&
+      request.dialogState !== 'COMPLETED';
+  },
+  handle(handlerInput) {
+    const currentIntent = handlerInput.requestEnvelope.request.intent;
+    return handlerInput.responseBuilder
+      .addDelegateDirective(currentIntent)
+      .getResponse();
+  },
+}
+
+const CompletedGetObjectInDirectionIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'GetObjectInDirectionIntent';
+  },
+  async handle(handlerInput) {
+    const direction = handlerInput.requestEnvelope.request.intent.slots.Direction.value;
+    var attributes = await handlerInput.attributesManager.getPersistentAttributes();
+
+    // Step 7: Create the payload for getting object in a direction
+
+
+    // Step 8: Add alexaPlusUnity.publishMessageAndListenToResponse and send our payload
+
+    console.log(response);
+    
+    return response;
+  }
+}
+
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speechText = 'You can say turn on to turn on the light!';
+    const speechText = 'You can say turn on to turn on the pump!';
 
     return handlerInput.responseBuilder
       .speak(speechText)
@@ -226,6 +263,8 @@ exports.handler = skillBuilder
     InProgressChangeColorIntentHandler,
     CompletedChangeColorIntentHandler,
     GetColorIntentHandler,
+    InProgressGetObjectInDirectionIntentHandler,
+    CompletedGetObjectInDirectionIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler
@@ -235,35 +274,35 @@ exports.handler = skillBuilder
   .withAutoCreateTable(true)
   .lambda();
 
-async function launchSetUp(speechText, reprompt, handlerInput, attributes) {
-  const responseBuilder = handlerInput.responseBuilder;
-
-  speechText += alexaCookbook.getRandomItem(speechOutputs.launch.speak.setup) + reprompt;
-
-  // Step 7: Create a sqs queue and send it to user for them to input in the game
+  async function launchSetUp(speechText, reprompt, handlerInput, attributes) {
+    const responseBuilder = handlerInput.responseBuilder;
   
-
-  var result = {
-    response: response,
-    attributes: attributes
-  }
-  return result;
-}
-
-async function sendUserId(userId, attributes, handlerInput, response) {
-
-  // Step 8: Create a payload that has the alexa user id
+    speechText += alexaCookbook.getRandomItem(speechOutputs.launch.speak.setup) + reprompt;
   
-
-  // Step 9: Add alexaGaming.publishEventSimple and send our payload
-  
-}
-
-async function setAttributes(attributes) {
-  if (Object.keys(attributes).length === 0) {
-    // Step 10: Initialize the attributes
+    // Step 9: Create a sqs queue and send it to user for them to input in the game
     
-    //Add more attributes here that need to be initalized at skill start
+  
+    var result = {
+      response: response,
+      attributes: attributes
+    }
+    return result;
   }
-  return attributes;
-}
+  
+  async function sendUserId(userId, attributes, handlerInput, response) {
+  
+    // Step 10: Create a payload that has the alexa user id
+    
+  
+    // Step 11: Add alexaPlusUnity.publishEventSimple and send our payload
+    
+  }
+  
+  async function setAttributes(attributes) {
+    if (Object.keys(attributes).length === 0) {
+      // Step 12: Initialize the attributes
+      
+      //Add more attributes here that need to be initalized at skill start
+    }
+    return attributes;
+  }
