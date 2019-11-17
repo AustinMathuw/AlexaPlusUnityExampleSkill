@@ -7,8 +7,6 @@ AWS.config.update({region: 'us-east-1'});
 var alexaCookbook = require('./alexa-cookbook.js');
 // Step 1: Require the alexaplusunity module and set it to alexaPlusUnityClass
 
-// Next, create a new instance of alexaPlusUnityClass and set it to alexaPlusUnity
-
 
 const speechOutputs = {
   launch: {
