@@ -6,6 +6,8 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 var alexaCookbook = require('./alexa-cookbook.js');
 // Step 1: Require the alexaplusunity module and set it to alexaPlusUnityClass
+var alexaPlusUnityClass = require('alexaplusunity');
+var alexaPlusUnity = new alexaPlusUnityClass("pub-c-a8ed4b8f-2fe0-4f2d-884d-1bbd230ba401", "sub-c-8779045c-0986-11ea-98aa-b207d7d0b791", true); //Third parameter enables verbose logging
 
 
 const speechOutputs = {
@@ -58,6 +60,11 @@ const LaunchRequestHandler = {
         .getResponse();
 
     // Step 2: Add SETUP_STATE check
+    if(attributes.SETUP_STATE == "STARTED") {
+      var launchSetUpResult = await launchSetUp(speechText, reprompt, handlerInput, attributes);
+      attributes = launchSetUpResult.attributes;
+      response = launchSetUpResult.response;
+    }
 
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
@@ -98,6 +105,7 @@ const CompletetedFlipSwitchIntentHandler = {
 
     // Step 4: Add alexaPlusUnity.publishEvent and send our payload
     
+
     return response;
   }
 };
@@ -134,6 +142,7 @@ const CompletedChangeColorIntentHandler = {
     
 
     // Step 6: Add alexaPlusUnity.publishEvent and send our payload
+    
     
     return response;
   },
@@ -182,9 +191,10 @@ const CompletedGetObjectInDirectionIntentHandler = {
     var attributes = await handlerInput.attributesManager.getPersistentAttributes();
 
     // Step 7: Create the payload for getting object in a direction
-
+    
 
     // Step 8: Add alexaPlusUnity.publishMessageAndListenToResponse and send our payload
+    
     
     return response;
   }
@@ -292,11 +302,13 @@ exports.handler = skillBuilder
   
     // Step 11: Add alexaPlusUnity.publishEvent and send our payload
     
+    
   }
   
   async function setAttributes(attributes) {
     if (Object.keys(attributes).length === 0) {
       // Step 12: Initialize the attributes
+      
       
       //Add more attributes here that need to be initalized at skill start
     }
