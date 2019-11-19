@@ -6,8 +6,6 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 var alexaCookbook = require('./alexa-cookbook.js');
 // Step 1: Require the alexaplusunity module and set it to alexaPlusUnityClass
-var alexaPlusUnityClass = require('alexaplusunity');
-var alexaPlusUnity = new alexaPlusUnityClass("pub-c-a8ed4b8f-2fe0-4f2d-884d-1bbd230ba401", "sub-c-8779045c-0986-11ea-98aa-b207d7d0b791", true); //Third parameter enables verbose logging
 
 
 const speechOutputs = {
@@ -60,11 +58,7 @@ const LaunchRequestHandler = {
         .getResponse();
 
     // Step 2: Add SETUP_STATE check
-    if(attributes.SETUP_STATE == "STARTED") {
-      var launchSetUpResult = await launchSetUp(speechText, reprompt, handlerInput, attributes);
-      attributes = launchSetUpResult.attributes;
-      response = launchSetUpResult.response;
-    }
+
 
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
@@ -194,7 +188,7 @@ const CompletedGetObjectInDirectionIntentHandler = {
     
 
     // Step 8: Add alexaPlusUnity.publishMessageAndListenToResponse and send our payload
-    
+
     
     return response;
   }
@@ -206,7 +200,7 @@ const HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speechText = 'You can say turn on to turn on the pump!';
+    const speechText = 'You can say turn on to turn on the light!';
 
     return handlerInput.responseBuilder
       .speak(speechText)
@@ -285,7 +279,7 @@ exports.handler = skillBuilder
   
     speechText += alexaCookbook.getRandomItem(speechOutputs.launch.speak.setup) + reprompt;
   
-    // Step 9: Create a sqs queue and send it to user for them to input in the game
+    // Step 9: Create a Pubnub and send it to user for them to input in the game
     
   
     var result = {
@@ -298,7 +292,7 @@ exports.handler = skillBuilder
   async function sendUserId(userId, attributes, handlerInput, response) {
   
     // Step 10: Create a payload that has the user's alexa id
-    
+
   
     // Step 11: Add alexaPlusUnity.publishEvent and send our payload
     
@@ -308,7 +302,7 @@ exports.handler = skillBuilder
   async function setAttributes(attributes) {
     if (Object.keys(attributes).length === 0) {
       // Step 12: Initialize the attributes
-      
+
       
       //Add more attributes here that need to be initalized at skill start
     }
