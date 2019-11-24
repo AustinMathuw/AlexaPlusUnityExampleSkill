@@ -81,7 +81,7 @@ const InProgressFlipSwitchIntentHandler = {
   },
 }
 
-const CompletetedFlipSwitchIntentHandler = {
+const CompletedFlipSwitchIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
       && handlerInput.requestEnvelope.request.intent.name === 'FlipSwitchIntent';
@@ -259,7 +259,7 @@ exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
     InProgressFlipSwitchIntentHandler,
-    CompletetedFlipSwitchIntentHandler,
+    CompletedFlipSwitchIntentHandler,
     InProgressChangeColorIntentHandler,
     CompletedChangeColorIntentHandler,
     GetColorIntentHandler,
