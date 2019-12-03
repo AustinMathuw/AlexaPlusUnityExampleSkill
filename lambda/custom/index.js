@@ -182,7 +182,10 @@ const CompletedGetObjectInDirectionIntentHandler = {
   },
   async handle(handlerInput) {
     const direction = handlerInput.requestEnvelope.request.intent.slots.Direction.value;
+    const direction_id = handlerInput.requestEnvelope.request.intent.slots.Direction.resolutions.resolutionsPerAuthority[0].values[0].value.id;
     var attributes = await handlerInput.attributesManager.getPersistentAttributes();
+    const speechText = '';
+    const reprompt = ' What\'s next?';
 
     // Step 7: Create the payload for getting object in a direction
     
