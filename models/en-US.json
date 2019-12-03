@@ -141,16 +141,37 @@
                     "name": "Directions",
                     "values": [
                         {
+                            "id": "down",
+                            "name": {
+                                "value": "down",
+                                "synonyms": [
+                                    "below"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "up",
+                            "name": {
+                                "value": "up",
+                                "synonyms": [
+                                    "above"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "right",
                             "name": {
                                 "value": "right"
                             }
                         },
                         {
+                            "id": "left",
                             "name": {
                                 "value": "left"
                             }
                         },
                         {
+                            "id": "backward",
                             "name": {
                                 "value": "backward",
                                 "synonyms": [
@@ -159,6 +180,7 @@
                             }
                         },
                         {
+                            "id": "forward",
                             "name": {
                                 "value": "forward",
                                 "synonyms": [
@@ -204,7 +226,8 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "delegationStrategy": "SKILL_RESPONSE"
         },
         "prompts": [
             {
